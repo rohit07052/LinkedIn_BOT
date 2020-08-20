@@ -76,8 +76,8 @@ class Linkedin:
             
             listOfDesc = []
             length = len(liElements)
-            
-            for index in range(length):
+            index = 0
+            while length:
                 sleep(2)
 
                 a = self.driver.find_element_by_xpath("/html/body/div[8]/div[3]/div/div/div/div/div/div/section/div[2]/section/div/ul")
@@ -146,6 +146,8 @@ class Linkedin:
                     self.driver.execute_script("window.history.go(-1)")
                     sleep(10)
                 sleep(1)
+                index += 1
+                length -= 1
             print(listOfDesc)
             
         #except:
