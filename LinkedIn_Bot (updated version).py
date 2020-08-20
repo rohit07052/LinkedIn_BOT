@@ -1,6 +1,5 @@
 ## if institution is not matched it goes to his/her account and checks again
 # if then matched then it accepts but it makes the process slow
-
 from selenium import webdriver
 from time import sleep
 import re
@@ -13,6 +12,7 @@ class Linkedin:
 
         
         self.driver.get("https://linkedin.com")
+        print('Chrome opened')
         
         sleep(2)
         #maximizing the window
@@ -30,6 +30,8 @@ class Linkedin:
         
         sleep(1)
 
+        print('Logging in')
+
         #clicking signin button
         self.driver.find_element_by_xpath("/html/body/main/section[1]/div[2]/form/button")\
         .click()
@@ -37,19 +39,23 @@ class Linkedin:
         sleep(1)
         # i am not a robot..
 
+        print('Logged In')
 
         #going to network section
         self.driver.find_element_by_xpath("//*[@id=\"mynetwork-nav-item\"]")\
         .click()
         
         sleep(3)
+        
         #self.driver.find_element_by_xpath("/html/body/div[9]/header/div[2]/nav/ul/li[2]/a")\
         #.click()
         #sleep(1)
         # click on the message to close
+        
         self.driver.find_element_by_xpath("/html/body/div[9]/aside/div[1]/header").click()
         sleep(3)
         # go to the manage section
+        
         self.driver.find_element_by_xpath("/html/body/div[9]/div[4]/div/div/div/div/div/div/div[1]/section/header/a")\
         .click()
 
@@ -63,23 +69,26 @@ class Linkedin:
     def listSameInst(self,regularExpr):
         
         #self.driver.execute_script("window.scrollTo(0,document.body.scrollHeight)")
-        try:
+        if 1:#try:
             
             recievedUl = self.driver.find_element_by_xpath("/html/body/div[8]/div[3]/div/div/div/div/div/div/section/div[2]/section/div/ul")
             liElements = recievedUl.find_elements_by_tag_name("li")#.find_element_by_css_selector("div.display-flex ph2 pt1 pb1")
             
             listOfDesc = []
+            length = len(liElements)
             
-            for li in liElements:
-                
-                
+            for index in range(length):
+                sleep(2)
+
+                a = self.driver.find_element_by_xpath("/html/body/div[8]/div[3]/div/div/div/div/div/div/section/div[2]/section/div/ul")
+                b = a.find_elements_by_tag_name("li")
     ##            div1 = i.find_element_by_css_selector("div.display-flex.ph2.pt1.pb1")
     ##            div2 = i.find_element_by_css_selector("div.display-flex.ph2.pt1.pb1 > div.display-flex.flex-1.align-items-center.pl0")
     ##            div3 = i.find_element_by_css_selector("div.display-flex.ph2.pt1.pb1 > div.display-flex.flex-1.align-items-center.pl0 > div")
     ##            div4 = i.find_element_by_css_selector("a.invitation-card__link.ember-view")
                 
-                div5 = li.find_element_by_css_selector("span.invitation-card__subtitle.t-14.t-black--light.t-normal")
-                div6 = li.find_element_by_css_selector("span.invitation-card__title.t-16.t-black.t-bold")
+                div5 = b[index].find_element_by_css_selector("span.invitation-card__subtitle.t-14.t-black--light.t-normal")
+                div6 = b[index].find_element_by_css_selector("span.invitation-card__title.t-16.t-black.t-bold")
                 
                 inst = div5.get_attribute('innerHTML')
                 
@@ -94,7 +103,7 @@ class Linkedin:
                     
                     listOfDesc.append(div6.get_attribute('innerHTML'))
                     
-                    accept = li.find_element_by_css_selector("button.invitation-card__action-btn.artdeco-button.artdeco-button--2.artdeco-button--secondary.ember-view")
+                    accept = b[index].find_element_by_css_selector("button.invitation-card__action-btn.artdeco-button.artdeco-button--2.artdeco-button--secondary.ember-view")
                     print(accept.get_attribute('innerHTML'))
                     
                     accept.click()
@@ -103,9 +112,9 @@ class Linkedin:
                 
                 else:
                     ## if not found go to that person's account and check there if it is not present there also then don't accept
-                    ## else set gotoDetAcpt to True go back and accept that person
-
                     
+
+                    print('in the else section')
                     div5.click()  # going to his/her account
 
                     # get the details
@@ -116,7 +125,7 @@ class Linkedin:
                     
                     #institution = self.driver.find_element_by_css_selector("div.ph5.pb5 >div.display-flex.mt2 > div:nth-child(2) > ul")
                     
-                    inst = self.driver.find_element_by_css_selector("div.ph5.pb5 > div.display-flex.mt2 > div:nth-child(2) > ul > li > a > span")
+                    inst = self.driver.find_element_by_css_selector("body > div.application-outlet > div.authentication-outlet > div > div > div > div > div.pv-content.profile-view-grid.neptune-grid.two-column.ghost-animate-in > main > div.ember-view > section > div.ph5.pb5 > div.display-flex.mt2 > div:nth-child(2) > ul > li > a > span")
                     
                     
                     getInst = inst.get_attribute('innerHTML')
@@ -130,19 +139,22 @@ class Linkedin:
                         againAccpt = self.driver.find_element_by_xpath("/html/body/div[8]/div[3]/div/div/div/div/div[2]/main/div[1]/section/div[2]/div[1]/div[2]/div/div/span[1]/div/button")
                         
                         againAccpt.click()
-                        
-                    sleep(4)
+                        index -= 1
+                        length -= 1
+                        sleep(3)
                     
                     self.driver.execute_script("window.history.go(-1)")
+                    sleep(10)
                 sleep(1)
             print(listOfDesc)
-        except:
-            pass
+            
+        #except:
+            #pass
 
 
         
     def withdraw(self,timelimit):
-        try:
+        if 1:#try:
             # go to the sent section
             self.driver.find_element_by_xpath("/html/body/div[8]/div[3]/div/div/div/div/div/div/section/div[1]/div/button[2]")\
             .click()
@@ -173,8 +185,10 @@ class Linkedin:
                 t1,t2 = timelimit.split()
                 t1 = int(t1)
                 t3 = prec.index(t2)
-                if timePrec>=t1 and int(timeSplit[0])>t2:
-
+                print(t1,t3)
+                print(timePrec,timeSplit[0])
+                if t3<timePrec or (t3==timePrec and  int(timeSplit[0])>=t1):
+                    print('in the if section')
                     # get the withdraw button
                     print(li.find_element_by_css_selector("span.invitation-card__title.t-16.t-black.t-bold").get_attribute('innerHTML')) #for debugging purposes
                     
@@ -200,11 +214,11 @@ class Linkedin:
                     
                 sleep(1)
             
-        except:
-            pass
+##        except:
+##            pass
         
                 
-myObj = Linkedin('yelmifarzi@enayu.com','dontforget')
+myObj = Linkedin('nirtizerto@enayu.com','hellohello')
 sleep(2)
 
 # set the regular expression for selecting ......
