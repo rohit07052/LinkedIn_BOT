@@ -1,5 +1,7 @@
 ## if institution is not matched it goes to his/her account and checks again
 # if then matched then it accepts but it makes the process slow
+
+
 from selenium import webdriver
 from time import sleep
 import re
@@ -17,6 +19,7 @@ class Linkedin:
         sleep(2)
         #maximizing the window
         self.driver.maximize_window()
+
         
         #selecting username/email text input type
         self.driver.find_element_by_xpath("/html/body/main/section[1]/div[2]/form/div[2]/div[1]/input")\
@@ -36,22 +39,26 @@ class Linkedin:
         self.driver.find_element_by_xpath("/html/body/main/section[1]/div[2]/form/button")\
         .click()
         
-        sleep(1)
+        sleep(3)
         # i am not a robot..
 
         print('Logged In')
 
         #going to network section
+
+        
         self.driver.find_element_by_xpath("//*[@id=\"mynetwork-nav-item\"]")\
         .click()
         
-        sleep(3)
+        sleep(1)
+
+        print('in network section')
         
         #self.driver.find_element_by_xpath("/html/body/div[9]/header/div[2]/nav/ul/li[2]/a")\
         #.click()
         #sleep(1)
         # click on the message to close
-        
+        sleep(2)
         self.driver.find_element_by_xpath("/html/body/div[9]/aside/div[1]/header").click()
         sleep(3)
         # go to the manage section
@@ -59,35 +66,42 @@ class Linkedin:
         self.driver.find_element_by_xpath("/html/body/div[9]/div[4]/div/div/div/div/div/div/div[1]/section/header/a")\
         .click()
 
+        print('in manage section')
+        sleep(2)
 
+        
         #navigation part over
         
         # method for getting the list of connection request
+        
         # from your institution/company
+
+
+
 
     
     def listSameInst(self,regularExpr):
         
         #self.driver.execute_script("window.scrollTo(0,document.body.scrollHeight)")
-        if 1:#try:
+        if 1:
             
             recievedUl = self.driver.find_element_by_xpath("/html/body/div[8]/div[3]/div/div/div/div/div/div/section/div[2]/section/div/ul")
-            liElements = recievedUl.find_elements_by_tag_name("li")#.find_element_by_css_selector("div.display-flex ph2 pt1 pb1")
+            liElements = recievedUl.find_elements_by_tag_name("li")
+            
             
             listOfDesc = []
             length = len(liElements)
-            index = 0
-            while length:
+
+
+            
+            for index in range(length):
                 sleep(2)
 
                 a = self.driver.find_element_by_xpath("/html/body/div[8]/div[3]/div/div/div/div/div/div/section/div[2]/section/div/ul")
                 b = a.find_elements_by_tag_name("li")
-    ##            div1 = i.find_element_by_css_selector("div.display-flex.ph2.pt1.pb1")
-    ##            div2 = i.find_element_by_css_selector("div.display-flex.ph2.pt1.pb1 > div.display-flex.flex-1.align-items-center.pl0")
-    ##            div3 = i.find_element_by_css_selector("div.display-flex.ph2.pt1.pb1 > div.display-flex.flex-1.align-items-center.pl0 > div")
-    ##            div4 = i.find_element_by_css_selector("a.invitation-card__link.ember-view")
                 
                 div5 = b[index].find_element_by_css_selector("span.invitation-card__subtitle.t-14.t-black--light.t-normal")
+
                 div6 = b[index].find_element_by_css_selector("span.invitation-card__title.t-16.t-black.t-bold")
                 
                 inst = div5.get_attribute('innerHTML')
@@ -95,7 +109,7 @@ class Linkedin:
                 string = (div5.get_attribute('innerHTML'))
                 
                 regex = re.compile(regularExpr,flags = re.IGNORECASE|re.MULTILINE)
-                #regex = re.compile(r"internship",flags = re.IGNORECASE|re.MULTILINE)
+                
                 
                 searchInst = regex.search(string)
                 
@@ -108,11 +122,29 @@ class Linkedin:
                     
                     accept.click()
     
-                    
+            self.driver.refresh()
+
+            print('refresh')
+            sleep(3)
+
+            recievedUl = self.driver.find_element_by_xpath("/html/body/div[8]/div[3]/div/div/div/div/div/div/section/div[2]/section/div/ul")
+            liElements = recievedUl.find_elements_by_tag_name("li")
+
+            length = len(liElements)
+
+            index = 0
                 
-                else:
+            while index < length:
                     ## if not found go to that person's account and check there if it is not present there also then don't accept
-                    
+                if 1:
+
+                    a = self.driver.find_element_by_xpath("/html/body/div[8]/div[3]/div/div/div/div/div/div/section/div[2]/section/div/ul")
+                    b = a.find_elements_by_tag_name("li")
+                
+                    div5 = b[index].find_element_by_css_selector("span.invitation-card__subtitle.t-14.t-black--light.t-normal")
+
+                    div6 = b[index].find_element_by_css_selector("span.invitation-card__title.t-16.t-black.t-bold")
+                
 
                     print('in the else section')
                     div5.click()  # going to his/her account
@@ -139,24 +171,21 @@ class Linkedin:
                         againAccpt = self.driver.find_element_by_xpath("/html/body/div[8]/div[3]/div/div/div/div/div[2]/main/div[1]/section/div[2]/div[1]/div[2]/div/div/span[1]/div/button")
                         
                         againAccpt.click()
-                        index -= 1
-                        length -= 1
                         sleep(3)
+                        length -= 1
+                        index -= 1
+                    index += 1
                     
                     self.driver.execute_script("window.history.go(-1)")
-                    sleep(10)
+                    sleep(5)
                 sleep(1)
-                index += 1
-                length -= 1
             print(listOfDesc)
             
-        #except:
-            #pass
 
 
         
     def withdraw(self,timelimit):
-        if 1:#try:
+        try:
             # go to the sent section
             self.driver.find_element_by_xpath("/html/body/div[8]/div[3]/div/div/div/div/div/div/section/div[1]/div/button[2]")\
             .click()
@@ -216,11 +245,11 @@ class Linkedin:
                     
                 sleep(1)
             
-##        except:
-##            pass
+        except:
+            pass
         
                 
-myObj = Linkedin('nirtizerto@enayu.com','hellohello')
+myObj = Linkedin('kuziygjypvxjnmztji@upived.com','sentsent')
 sleep(2)
 
 # set the regular expression for selecting ......
@@ -228,6 +257,6 @@ regularExpr = r"(asansol)+\s(engineering)\s(college)+"
 
 myObj.listSameInst(regularExpr)
 sleep(3)
-gettimelimit = '5 hours'  # set time limit (small time limit for testing purposes)
+gettimelimit = '2 hours'  # set time limit (small time limit for testing purposes)
 myObj.withdraw(gettimelimit)
 
